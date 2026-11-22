@@ -32,5 +32,16 @@ Kept unchanged: the email-forwarding MX records and the SPF TXT record.
 
 ## Change log
 
-- **2026-11-22:** Created the GitHub Pages site with custom domain `normaapps.com`.
-- DNS edits are logged below as they are made.
+All edits on 2026-11-22, made in Namecheap → Domain List → normaapps.com → Advanced DNS:
+
+1. Created the GitHub Pages site (`talmor84/normaapps-site`, branch `main`, root) with custom domain `normaapps.com`.
+2. Deleted the `URL Redirect` record: `@` → `http://www.normaapps.com/` (Unmasked).
+3. Edited the `www` CNAME from `parkingpage.namecheap.com.` to `talmor84.github.io.` (TTL 30 min). A first save briefly stored the bad value `talmor84.github.io.parkingpage.namecheap.com.`; it was corrected within a few minutes.
+4. Added four A records on `@` (185.199.108.153, .109.153, .110.153, .111.153), TTL Automatic.
+5. Left untouched: Mail Settings (Email Forwarding, its MX records, and the locked SPF TXT record), nameservers, DNSSEC (off), Dynamic DNS (off).
+
+Checked after the change: the authoritative server (`dns1.registrar-servers.com`), Google 8.8.8.8 and Cloudflare 1.1.1.1 all return the four GitHub A records, and the MX records are unchanged.
+
+## To roll back
+
+Delete the four A records. Set the `www` CNAME back to `parkingpage.namecheap.com.`. Add a URL Redirect record `@` → `http://www.normaapps.com/` (Unmasked).
