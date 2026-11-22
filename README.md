@@ -32,15 +32,16 @@ npm run serve   # serve dist/ at http://localhost:4321
    | `listed` | Shows the product in the homepage library. |
    | `page` | Builds a product page. |
    | `screenshots`, `screenshotSize` | Real screenshots captured from the app. |
-   | `heroScreen`, `homeScreens`, `groups` | Which screenshots appear beside the title, on the homepage, and in each functional group on the product page. |
+   | `trioScreens`, `groups` | The three phones (left, center, right) on the homepage and product page, and the screenshots in each functional group. |
+   | `cardImage`, `cardTone`, `nameNote` | For in-development cards: a real project image (or `null` for a text-only card), `teal` or `warm` background, and a note such as "Working title". |
    | `icon`, `iconSmall` | App icon at 192 and 96 pixels. |
 
 2. Put real screenshots captured from the app in a folder and run
    `python scripts/optimize_screens.py <folder> <slug>`. This only scales and re-encodes them to WebP.
-3. Run `npm run og` to render the social preview image, then `npm test`.
+3. Run `npm run og` to render the social preview images (they include the status text, so rerun it when a status changes), then `npm test`.
 4. Open a pull request.
 
-Empty categories are never shown. A product appears on the homepage once `listed` is true. Checks run on every pull request; merging to `main` deploys.
+The featured product leads the homepage. Listed products with status `in-development` appear as cards under "In development" with no link. Empty categories are never shown. Checks run on every pull request; merging to `main` deploys.
 
 When Apple approves an app, change its `status` to `available`. The App Store button then replaces "Coming to iPhone" everywhere.
 

@@ -56,10 +56,9 @@
         "alt": "Norma Health Progress screen with a 7-day average weight chart against a goal"
       }
     ],
-    "homeScreens": [
-      "today",
+    "trioScreens": [
       "meals",
-      "activity",
+      "today",
       "progress"
     ],
     "groups": [
@@ -92,7 +91,44 @@
     "appStoreUrl": "https://apps.apple.com/app/id6837557939",
     "externalUrl": null,
     "privacyUrl": "https://api-production-0cc02593.up.railway.app/privacy",
-    "supportUrl": "https://api-production-0cc02593.up.railway.app/support",
-    "heroScreen": "today"
+    "supportUrl": "https://api-production-0cc02593.up.railway.app/support"
+  },
+  {
+    "slug": "norma-spatial-lab",
+    "name": "Norma Spatial Lab",
+    "category": "experiences",
+    "platforms": [
+      "Meta Quest"
+    ],
+    "status": "in-development",
+    "featured": false,
+    "listed": true,
+    "page": false,
+    "tagline": "Virtual reality",
+    "summary": "Interactive experiences for virtual reality.",
+    "cardImage": {
+      "src": "/assets/products/norma-spatial-lab/dojo-512.webp",
+      "width": 512,
+      "height": 512,
+      "alt": "A table tennis match in a dojo, from a Norma Spatial Lab prototype for Meta Quest"
+    },
+    "cardTone": "teal"
+  },
+  {
+    "slug": "norma-personal-tv",
+    "name": "Norma Personal TV",
+    "nameNote": "Working title",
+    "category": "experiences",
+    "platforms": [
+      "Fire TV"
+    ],
+    "status": "in-development",
+    "featured": false,
+    "listed": true,
+    "page": false,
+    "tagline": "Television",
+    "summary": "A media application for Fire TV.",
+    "cardImage": null,
+    "cardTone": "warm"
   }
 ]

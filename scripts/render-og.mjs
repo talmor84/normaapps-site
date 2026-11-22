@@ -23,29 +23,36 @@ body { background: #ffffff; font-family: Inter, sans-serif; color: #1d1b17; posi
 .pad { position: absolute; inset: 72px 80px; }
 h1 { font-weight: 600; color: #1a1a18; letter-spacing: -0.045em; line-height: 0.94; }
 .rule { position: absolute; left: 80px; right: 80px; height: 1px; background: #1a1a18; }
-.screen { position: absolute; width: 100%; aspect-ratio: 1320 / 2868; border-radius: 9% / 4.15%; box-shadow: 0 0 0 1px #e4e3df; display: block; }
+.screen { position: absolute; display: block; border: 8px solid #161616; border-radius: 30px; box-shadow: 0 0 0 1.5px #b9b9b6; background: #161616; }
 `;
 
 function page(body) {
   return `<!doctype html><html><head><meta charset="utf-8"><style>${css}</style></head><body>${body}</body></html>`;
 }
 
+const lead = products.find((p) => p.featured && p.page);
+const shotUrl = (p, id) => asset(`products/${p.slug}/${id}-960.webp`);
+const screens = (p) => {
+  const [a, b, c] = p.trioScreens || ['meals', 'today', 'progress'];
+  return `<img class="screen" src="${shotUrl(p, a)}" style="width: 190px; left: 640px; top: 120px">
+  <img class="screen" src="${shotUrl(p, c)}" style="width: 190px; left: 930px; top: 120px">
+  <img class="screen" src="${shotUrl(p, b)}" style="width: 228px; left: 766px; top: 64px; z-index: 2">`;
+};
+
 const home = page(`<div class="pad">
-  ${lockup({ height: 48 })}
+  ${lockup({ height: 56 })}
+  <p style="position:absolute; left: 0; bottom: 0; font-size: 30px; color: #5e5e5b; letter-spacing: -0.01em">Independent software publisher</p>
 </div>
-<div class="rule" style="top: 330px"></div>
-<h1 style="position:absolute; left: 80px; top: 384px; font-size: 116px; white-space: nowrap">We make software.</h1>`);
+${lead ? screens(lead) : ''}`);
 
 function productOg(p) {
-  const shot = (id) => asset(`products/${p.slug}/${id}-960.webp`);
-  const ids = (p.homeScreens || []).slice(0, 3);
   return page(`<div class="pad">
     ${lockup({ height: 40 })}
-    <img src="${asset(p.icon.replace('/assets/', ''))}" width="80" height="80" style="margin-top: 150px; border-radius: 22.5%; display:block">
-    <h1 style="font-size: 72px; margin-top: 28px">${esc(p.name)}</h1>
-    <p style="font-size: 26px; margin-top: 16px; color: #64625c; letter-spacing: -0.01em; max-width: 470px">${esc(p.summary)}</p>
+    <p style="margin-top: 150px; font-size: 18px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #0f3d3d">${esc(p.statusText || '')}</p>
+    <h1 style="font-size: 68px; margin-top: 18px; letter-spacing: -0.03em; line-height: 1.05">${esc(p.name)}</h1>
+    <p style="font-size: 26px; margin-top: 16px; color: #5e5e5b; letter-spacing: -0.01em; max-width: 470px">${esc(p.summary)}</p>
   </div>
-  ${ids.map((id, i) => `<img class="screen" src="${shot(id)}" style="width: 196px; left: ${600 + i * 212}px; top: ${72 + i * 0}px">`).join('')}`);
+  ${screens(p)}`);
 }
 
 const jobs = [['home', home], ...products.filter((p) => p.page).map((p) => [p.slug, productOg(p)])];
