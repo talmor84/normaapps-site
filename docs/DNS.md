@@ -48,6 +48,26 @@ Checked after the change: the authoritative server (`dns1.registrar-servers.com`
 - The certificate is from Let's Encrypt (CN `normaapps.com`, SAN `normaapps.com` and `www.normaapps.com`), valid until 2027-02-20. GitHub renews it automatically.
 - "Enforce HTTPS" is on. All four of `http://` and `https://` on the apex and on `www` end at `https://normaapps.com/`.
 
+## Email: Google Workspace (2026-11-22)
+
+normaapps.com became the **primary domain** of the existing Google Workspace that was on norma-adi.com. norma-adi.com is now a secondary domain.
+
+DNS changes:
+
+1. Mail Settings changed from **Email Forwarding** to **Custom MX**. This removed the Namecheap `eforward1–5` MX records and their locked SPF record. (The Namecheap "Gmail" preset was tried briefly first.)
+2. MX: `@` → `smtp.google.com.`, priority 1.
+3. TXT `@`: `google-site-verification=izmMlxzn2ShaYfkWZ6d2aqw6MNydEirmxg0KxB1bUR0` (Workspace ownership).
+4. TXT `@`: `v=spf1 include:_spf.google.com ~all`.
+5. TXT `google._domainkey`: Google DKIM 2048-bit public key. Authentication was started in Admin console → Gmail → Authenticate email.
+6. TXT `_dmarc`: `v=DMARC1; p=none` (monitoring only). Tighten to `quarantine` later if wanted.
+
+Workspace changes:
+
+- normaapps.com added and verified, Gmail activated, set as the primary domain.
+- Users renamed to `tal@`, `hello@` and `security@normaapps.com`. Each old `@norma-adi.com` address stays as an alias.
+
+Verified the same day: mail sent from Gmail to `tal@normaapps.com` and `tal@norma-adi.com` arrived. Mail from `tal@normaapps.com` to Gmail showed SPF pass, DKIM pass (d=normaapps.com) and DMARC pass.
+
 ## To roll back
 
 Delete the four A records. Set the `www` CNAME back to `parkingpage.namecheap.com.`. Add a URL Redirect record `@` → `http://www.normaapps.com/` (Unmasked).
