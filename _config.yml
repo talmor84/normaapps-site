@@ -1,4 +1,0 @@
-# GitHub Pages (Jekyll) settings. Keep repository docs off the public site.
-exclude:
-  - README.md
-  - docs

@@ -1,45 +1,62 @@
 # normaapps.com
 
-Source for **https://normaapps.com**, the corporate site of Norma, an independent software publisher.
+Source for **https://normaapps.com**, the website of Norma, an independent software publisher.
 
-Right now this is a temporary placeholder page. It is kept apart from Norma's application repositories on purpose.
+A small static site with no dependencies. A Node script reads the product data, renders the pages and writes them to `dist/`. GitHub Actions builds, checks and deploys it to GitHub Pages.
+
+## Run it locally
+
+Needs Node 20 or newer. Nothing to install.
+
+```bash
+npm test        # build into dist/ and run the site checks
+npm run serve   # serve dist/ at http://localhost:4321
+```
+
+`npm run check:external` also requests every external link.
+
+## Adding a product
+
+1. Add an entry to [`src/data/products.json`](src/data/products.json). The fields:
+
+   | Field | Meaning |
+   | --- | --- |
+   | `slug` | URL name. The page lives at `/products/<slug>/`. |
+   | `name`, `tagline`, `headline`, `summary`, `description` | Copy. Plain sentences, no em dashes. |
+   | `category` | `software`, `intelligence` or `experiences` (defined in `src/data/site.json`). |
+   | `platforms`, `price`, `appStoreCategory` | Facts shown on the product page. |
+   | `status` | `available`, `coming-soon` or `in-development`. |
+   | `appStoreUrl`, `externalUrl` | The store button appears only when `status` is `available` and `appStoreUrl` is set. |
+   | `privacyUrl`, `supportUrl` | Linked from the product page and the footer. |
+   | `featured` | Shows the product in the large homepage panel (one product at a time). |
+   | `listed` | Shows the product in the homepage library. |
+   | `page` | Builds a product page. |
+   | `screenshots`, `screenshotSize`, `features` | Real screenshots and the features they describe. |
+   | `icon`, `iconSmall` | App icon at 192 and 96 pixels. |
+
+2. Put real screenshots captured from the app in a folder and run
+   `python scripts/optimize_screens.py <folder> <slug>`. This only scales and re-encodes them to WebP.
+3. Run `npm run og` to render the social preview image, then `npm test`.
+4. Open a pull request. Checks run on every pull request; merging to `main` deploys.
+
+When Apple approves an app, change its `status` to `available`. The App Store button then replaces "Coming to iPhone" everywhere.
 
 ## Hosting
 
-- **Host:** GitHub Pages (free), deployed from the `main` branch root of this repository.
-- **Custom domain:** `normaapps.com` (set in `CNAME`), with HTTPS enforced. `www.normaapps.com` redirects to the apex.
-- **DNS:** Namecheap BasicDNS (`dns1/dns2.registrar-servers.com`). See [`docs/DNS.md`](docs/DNS.md) for the records and the change log.
-- **Cost:** $0/month for hosting. The domain renews yearly at Namecheap.
+- **Host:** GitHub Pages, source "GitHub Actions" ([`.github/workflows/pages.yml`](.github/workflows/pages.yml)). Pushes to `main` deploy. The workflow also runs every January 1 so the footer year updates.
+- **Custom domain:** `normaapps.com` (in `public/CNAME` and the Pages settings), HTTPS enforced. `www.normaapps.com` redirects to the apex.
+- **DNS:** Namecheap BasicDNS. See [`docs/DNS.md`](docs/DNS.md) for the records and the change log. Email records must not be changed.
+- **Cost:** $0 a month for hosting. The domain renews yearly at Namecheap.
 
-## Update and redeploy
+## Layout
 
-```bash
-git clone https://github.com/talmor84/normaapps-site.git
-cd normaapps-site
-# edit index.html (or replace the whole site)
-git commit -am "Update site"
-git push
-```
-
-GitHub Pages rebuilds automatically on every push to `main`, usually within a minute. Check progress with:
-
-```bash
-gh api repos/talmor84/normaapps-site/pages/builds/latest --jq .status
-```
-
-## Replacing the placeholder with the full site
-
-- **Plain HTML:** replace the files in the repository root.
-- **Built framework (Astro, Next static export, and so on):** switch Pages to "GitHub Actions" as the source and add a build workflow.
-
-Either way, keep the `CNAME` file (or the custom domain setting), or the domain will detach.
-
-## Files
-
-| File | Purpose |
+| Path | Purpose |
 | --- | --- |
-| `index.html` | Placeholder page. Self-contained, no external requests, no analytics. |
-| `404.html` | Not-found page |
-| `favicon.svg` | Tab icon |
-| `CNAME` | Custom domain for GitHub Pages |
-| `docs/DNS.md` | Original DNS records and every change made |
+| `src/data/` | Site and product data |
+| `src/templates/brand.mjs` | The canonical Norma lockup, copied exactly. Do not redraw it. |
+| `src/templates/pages.mjs` | Page templates |
+| `src/styles/site.css` | Styles |
+| `src/assets/` | Fonts (Inter and Fraunces, SIL OFL) and product images |
+| `public/` | Copied as is: favicons, CNAME, social images |
+| `scripts/check.mjs` | Fails on broken links, missing images or metadata, em dashes and banned names |
+| `scripts/render-og.mjs` | Renders `public/og/*.png` with headless Chrome |

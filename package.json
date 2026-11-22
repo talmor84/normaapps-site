@@ -1,0 +1,15 @@
+{
+  "name": "normaapps-site",
+  "private": true,
+  "type": "module",
+  "description": "The normaapps.com website for Norma.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "node src/build.mjs",
+    "check": "node scripts/check.mjs",
+    "check:external": "node scripts/check.mjs --external",
+    "test": "node src/build.mjs && node scripts/check.mjs",
+    "serve": "node scripts/serve.mjs",
+    "og": "node scripts/render-og.mjs"
+  }
+}
