@@ -65,6 +65,7 @@ Workspace changes:
 
 - normaapps.com added and verified, Gmail activated, set as the primary domain.
 - Users renamed to `tal@`, `hello@` and `security@normaapps.com`. Each old `@norma-adi.com` address stays as an alias.
+- 2026-11-22: user `hello@normaapps.com` renamed to `support@normaapps.com`; `hello@` stays as an alias. The site contact is now `support@`.
 
 Verified the same day: mail sent from Gmail to `tal@normaapps.com` and `tal@norma-adi.com` arrived. Mail from `tal@normaapps.com` to Gmail showed SPF pass, DKIM pass (d=normaapps.com) and DMARC pass.
 
