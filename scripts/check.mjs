@@ -48,6 +48,7 @@ const banned = [
   [/norma-adi/i, 'old domain'],
   [/Norma Apps/, '"Norma Apps" brand name'],
   [/testflight/i, 'TestFlight link'],
+  [/Fraunces/, 'retired display font'],
 ];
 
 for (const file of textFiles) {
@@ -114,7 +115,7 @@ for (const file of htmlFiles) {
 if (checkExternal) {
   for (const url of external) {
     try {
-      const res = await fetch(url, { method: 'GET', redirect: 'follow' });
+      const res = await fetch(url, { method: 'GET', redirect: 'follow', signal: AbortSignal.timeout(15000) });
       if (res.status >= 400) problems.push(`external ${url}: HTTP ${res.status}`);
     } catch (err) {
       problems.push(`external ${url}: ${err.message}`);

@@ -84,10 +84,9 @@ function validate(site, products) {
       throw new Error(`Product ${p.slug} is available but has no store or external URL`);
     }
     if (p.page) {
-      for (const f of p.features || []) {
-        if (!p.screenshots.some((s) => s.id === f.screenshot)) {
-          throw new Error(`Feature "${f.title}" in ${p.slug} points at missing screenshot ${f.screenshot}`);
-        }
+      const ids = [p.heroScreen, ...(p.homeScreens || []), ...(p.groups || []).flatMap((g) => g.screenshots)];
+      for (const id of ids.filter(Boolean)) {
+        if (!p.screenshots.some((s) => s.id === id)) throw new Error(`${p.slug} points at missing screenshot ${id}`);
       }
     }
   }

@@ -22,22 +22,25 @@ npm run serve   # serve dist/ at http://localhost:4321
    | Field | Meaning |
    | --- | --- |
    | `slug` | URL name. The page lives at `/products/<slug>/`. |
-   | `name`, `tagline`, `headline`, `summary`, `description` | Copy. Plain sentences, no em dashes. |
+   | `name`, `tagline`, `summary`, `description` | Copy. Short, concrete sentences, no em dashes. |
    | `category` | `software`, `intelligence` or `experiences` (defined in `src/data/site.json`). |
    | `platforms`, `price`, `appStoreCategory` | Facts shown on the product page. |
-   | `status` | `available`, `coming-soon` or `in-development`. |
+   | `status`, `statusText` | `available`, `coming-soon` or `in-development`, plus optional precise wording such as "In App Store review". |
    | `appStoreUrl`, `externalUrl` | The store button appears only when `status` is `available` and `appStoreUrl` is set. |
    | `privacyUrl`, `supportUrl` | Linked from the product page and the footer. |
    | `featured` | Shows the product in the large homepage panel (one product at a time). |
    | `listed` | Shows the product in the homepage library. |
    | `page` | Builds a product page. |
-   | `screenshots`, `screenshotSize`, `features` | Real screenshots and the features they describe. |
+   | `screenshots`, `screenshotSize` | Real screenshots captured from the app. |
+   | `heroScreen`, `homeScreens`, `groups` | Which screenshots appear beside the title, on the homepage, and in each functional group on the product page. |
    | `icon`, `iconSmall` | App icon at 192 and 96 pixels. |
 
 2. Put real screenshots captured from the app in a folder and run
    `python scripts/optimize_screens.py <folder> <slug>`. This only scales and re-encodes them to WebP.
 3. Run `npm run og` to render the social preview image, then `npm test`.
-4. Open a pull request. Checks run on every pull request; merging to `main` deploys.
+4. Open a pull request.
+
+Empty categories are never shown. A product appears on the homepage once `listed` is true. Checks run on every pull request; merging to `main` deploys.
 
 When Apple approves an app, change its `status` to `available`. The App Store button then replaces "Coming to iPhone" everywhere.
 
@@ -55,8 +58,8 @@ When Apple approves an app, change its `status` to `available`. The App Store bu
 | `src/data/` | Site and product data |
 | `src/templates/brand.mjs` | The canonical Norma lockup, copied exactly. Do not redraw it. |
 | `src/templates/pages.mjs` | Page templates |
-| `src/styles/site.css` | Styles |
-| `src/assets/` | Fonts (Inter and Fraunces, SIL OFL) and product images |
+| `src/styles/site.css` | Styles. The design system is summarized at the top of the file. |
+| `src/assets/` | Font (Inter, SIL OFL) and product images |
 | `public/` | Copied as is: favicons, CNAME, social images |
 | `scripts/check.mjs` | Fails on broken links, missing images or metadata, em dashes and banned names |
 | `scripts/render-og.mjs` | Renders `public/og/*.png` with headless Chrome |

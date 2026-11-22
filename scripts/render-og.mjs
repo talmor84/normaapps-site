@@ -17,16 +17,13 @@ const asset = (p) => pathToFileURL(join(root, 'src/assets', p)).href;
 
 const css = `
 @font-face { font-family: 'Inter'; src: url('${asset('fonts/inter-var-latin.woff2')}') format('woff2'); font-weight: 100 900; }
-@font-face { font-family: 'Fraunces'; src: url('${asset('fonts/fraunces-var-latin.woff2')}') format('woff2'); font-weight: 100 900; }
 * { box-sizing: border-box; margin: 0; }
 html, body { width: 1200px; height: 630px; overflow: hidden; }
 body { background: #ffffff; font-family: Inter, sans-serif; color: #1d1b17; position: relative; }
 .pad { position: absolute; inset: 72px 80px; }
-.eyebrow { font-size: 20px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #2f6e6e; }
-h1 { font-family: Fraunces, serif; font-weight: 400; color: #0f3d3d; letter-spacing: -0.02em; line-height: 1.04; font-variation-settings: 'opsz' 144; }
-.rule { position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: #0f3d3d; }
-.device { position: absolute; border-radius: 13% / 6%; padding: 1.6%; background: #121212; aspect-ratio: 1320 / 2868; }
-.device img { width: 100%; height: 100%; border-radius: 11% / 5%; display: block; }
+h1 { font-weight: 600; color: #1a1a18; letter-spacing: -0.045em; line-height: 0.94; }
+.rule { position: absolute; left: 80px; right: 80px; height: 1px; background: #1a1a18; }
+.screen { position: absolute; width: 100%; aspect-ratio: 1320 / 2868; border-radius: 9% / 4.15%; box-shadow: 0 0 0 1px #e4e3df; display: block; }
 `;
 
 function page(body) {
@@ -34,24 +31,21 @@ function page(body) {
 }
 
 const home = page(`<div class="pad">
-  ${lockup({ height: 56 })}
-  <p class="eyebrow" style="margin-top: 92px">${esc(site.descriptor)}</p>
-  <h1 style="font-size: 76px; margin-top: 22px; max-width: 900px">Software for living, working and exploring.</h1>
-</div><div class="rule"></div>`);
+  ${lockup({ height: 48 })}
+</div>
+<div class="rule" style="top: 330px"></div>
+<h1 style="position:absolute; left: 80px; top: 384px; font-size: 116px; white-space: nowrap">We make software.</h1>`);
 
 function productOg(p) {
   const shot = (id) => asset(`products/${p.slug}/${id}-960.webp`);
-  return page(`<div style="position:absolute; inset:0; right:440px">
-  <div class="pad" style="right: 40px">
-    ${lockup({ height: 44 })}
-    <img src="${asset(p.icon.replace('/assets/', ''))}" width="88" height="88" style="margin-top: 76px; border-radius: 22.5%; display:block">
-    <h1 style="font-size: 68px; margin-top: 26px">${esc(p.name)}</h1>
-    <p style="font-size: 30px; margin-top: 14px; color: #6c6860">${esc(p.tagline)}</p>
+  const ids = (p.homeScreens || []).slice(0, 3);
+  return page(`<div class="pad">
+    ${lockup({ height: 40 })}
+    <img src="${asset(p.icon.replace('/assets/', ''))}" width="80" height="80" style="margin-top: 150px; border-radius: 22.5%; display:block">
+    <h1 style="font-size: 72px; margin-top: 28px">${esc(p.name)}</h1>
+    <p style="font-size: 26px; margin-top: 16px; color: #64625c; letter-spacing: -0.01em; max-width: 470px">${esc(p.summary)}</p>
   </div>
-</div>
-<div style="position:absolute; top:0; right:0; bottom:0; width:440px; background:#0f3d3d; overflow:hidden">
-  <div class="device" style="width: 250px; left: 96px; top: 64px"><img src="${shot('today')}"></div>
-</div>`);
+  ${ids.map((id, i) => `<img class="screen" src="${shot(id)}" style="width: 196px; left: ${600 + i * 212}px; top: ${72 + i * 0}px">`).join('')}`);
 }
 
 const jobs = [['home', home], ...products.filter((p) => p.page).map((p) => [p.slug, productOg(p)])];
