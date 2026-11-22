@@ -37,7 +37,7 @@ async function resolveInternal(url) {
 
 const files = await walk(dist);
 const htmlFiles = files.filter((f) => f.endsWith('.html'));
-const textFiles = files.filter((f) => /\.(html|css|xml|txt|webmanifest|json)$/.test(f));
+const textFiles = files.filter((f) => /\.(html|css|xml|txt|webmanifest|json|svg)$/.test(f));
 const external = new Set();
 
 // Copy rules: no em or en dashes, no legal entity name, no link to the old domain.

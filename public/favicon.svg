@@ -11,7 +11,7 @@
     "10,5 10,27 24,27" stay BYTE-IDENTICAL inside a nested 24-unit
     SVG centered with 4u padding on each side of the 32u tile.
     This is a deliberate change to the canonical standalone mark's
-    inset everywhere it renders — the future product-sidebar
+    inset everywhere it renders: the future product-sidebar
     adoption will inherit this tighter inset.
 
     No inner registration square (that was the prior open-L grammar).
