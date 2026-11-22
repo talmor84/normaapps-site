@@ -42,6 +42,12 @@ All edits on 2026-11-22, made in Namecheap → Domain List → normaapps.com →
 
 Checked after the change: the authoritative server (`dns1.registrar-servers.com`), Google 8.8.8.8 and Cloudflare 1.1.1.1 all return the four GitHub A records, and the MX records are unchanged.
 
+## HTTPS
+
+- GitHub had not started the certificate after 45 minutes. I removed the custom domain and added it back (Pages API), and it was approved within a minute.
+- The certificate is from Let's Encrypt (CN `normaapps.com`, SAN `normaapps.com` and `www.normaapps.com`), valid until 2027-02-20. GitHub renews it automatically.
+- "Enforce HTTPS" is on. All four of `http://` and `https://` on the apex and on `www` end at `https://normaapps.com/`.
+
 ## To roll back
 
 Delete the four A records. Set the `www` CNAME back to `parkingpage.namecheap.com.`. Add a URL Redirect record `@` → `http://www.normaapps.com/` (Unmasked).
