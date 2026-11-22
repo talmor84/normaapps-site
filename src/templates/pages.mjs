@@ -16,32 +16,28 @@ const shot = (p, id) => p.screenshots.find((s) => s.id === id);
 const isAvailable = (p) => p.status === 'available' && Boolean(p.appStoreUrl);
 const platformList = (p) => p.platforms.join(' and ');
 
-function screenshotImg(p, id, { sizes = '300px', eager = false } = {}) {
-  const s = shot(p, id);
-  const base = `/assets/products/${p.slug}/${id}`;
-  const { width, height } = p.screenshotSize;
-  return `<img src="${base}-480.webp" srcset="${base}-480.webp 480w, ${base}-960.webp 960w" sizes="${sizes}" width="${width}" height="${height}" alt="${esc(s.alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
-}
-
-function device(p, id, opts = {}) {
-  return `<div class="device${opts.className ? ` ${opts.className}` : ''}">${screenshotImg(p, id, opts)}</div>`;
-}
-
 export function statusLabel(p) {
-  if (isAvailable(p)) return `Available on ${platformList(p)}`;
+  if (isAvailable(p)) return 'On the App Store';
+  if (p.statusText) return p.statusText;
   if (p.status === 'coming-soon') return `Coming to ${platformList(p)}`;
   return 'In development';
 }
 
-function statusBadge(p, { onDark = false } = {}) {
-  return `<span class="badge${onDark ? ' badge-dark' : ''}">${esc(statusLabel(p))}</span>`;
+function screen(p, id, { sizes, eager = false, caption = false } = {}) {
+  const s = shot(p, id);
+  const base = `/assets/products/${p.slug}/${id}`;
+  const { width, height } = p.screenshotSize;
+  const img = `<img class="screen" src="${base}-480.webp" srcset="${base}-480.webp 480w, ${base}-960.webp 960w" sizes="${sizes}" width="${width}" height="${height}" alt="${esc(s.alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
+  return caption ? `<figure class="shot">${img}<figcaption>${esc(s.label)}</figcaption></figure>` : `<figure class="shot">${img}</figure>`;
 }
 
-function storeCta(p, { onDark = false } = {}) {
-  if (isAvailable(p)) {
-    return `<a class="btn ${onDark ? 'btn-light' : 'btn-primary'}" href="${esc(p.appStoreUrl)}" rel="noopener">Download on the App Store</a>`;
-  }
-  return statusBadge(p, { onDark });
+function storeLink(p) {
+  if (!isAvailable(p)) return '';
+  return `<a class="button" href="${esc(p.appStoreUrl)}" rel="noopener">Download on the App Store</a>`;
+}
+
+function meta(p) {
+  return `<p class="meta"><span class="status${isAvailable(p) ? ' status-live' : ''}">${esc(statusLabel(p))}</span><span>${esc(platformList(p))}</span><span>${esc(p.price)}</span></p>`;
 }
 
 /* ---------- layout ---------- */
@@ -50,7 +46,7 @@ function header() {
   return `<a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap header-row">
-    <a class="brand" href="/" aria-label="Norma home">${lockup({ height: 34, label: 'Norma' })}</a>
+    <a class="brand" href="/" aria-label="Norma home">${lockup({ height: 32, label: 'Norma' })}</a>
     <nav class="site-nav" aria-label="Main">
       <a href="/#products">Products</a>
       <a href="/#about">About</a>
@@ -60,45 +56,22 @@ function header() {
 }
 
 function footer(site, products) {
-  const productLinks = products
-    .filter((p) => p.listed && p.page)
-    .map((p) => `<li><a href="${productRoute(p)}">${esc(p.name)}</a></li>`)
-    .join('');
-  const legal = products
-    .filter((p) => p.listed && p.page)
+  const pages = products.filter((p) => p.listed && p.page);
+  const productLinks = pages.map((p) => `<li><a href="${productRoute(p)}">${esc(p.name)}</a></li>`).join('');
+  const legal = pages
     .flatMap((p) => [
-      p.privacyUrl && `<li><a href="${esc(p.privacyUrl)}" rel="noopener">${esc(p.name)} privacy policy</a></li>`,
+      p.privacyUrl && `<li><a href="${esc(p.privacyUrl)}" rel="noopener">${esc(p.name)} privacy</a></li>`,
       p.supportUrl && `<li><a href="${esc(p.supportUrl)}" rel="noopener">${esc(p.name)} support</a></li>`,
     ])
     .filter(Boolean)
     .join('');
   return `<footer class="site-footer">
-  <div class="wrap footer-grid">
-    <div class="footer-brand">
-      <a href="/" aria-label="Norma home">${lockup({ height: 30, label: 'Norma' })}</a>
-      <p>${esc(site.descriptor)}</p>
-    </div>
-    <nav class="footer-col" aria-label="Products">
-      <h2>Products</h2>
-      <ul>${productLinks}</ul>
-    </nav>
-    <nav class="footer-col" aria-label="Company">
-      <h2>Company</h2>
-      <ul>
-        <li><a href="/#about">About</a></li>
-        <li><a href="mailto:${esc(site.email)}">${esc(site.email)}</a></li>
-      </ul>
-    </nav>
-    <nav class="footer-col" aria-label="Legal">
-      <h2>Legal and support</h2>
-      <ul>
-        <li><a href="/privacy/">Website privacy</a></li>
-        ${legal}
-      </ul>
-    </nav>
-  </div>
-  <div class="wrap footer-base">
-    <p>&copy; ${YEAR} Norma. All rights reserved.</p>
+  <div class="wrap grid footer-grid">
+    <div class="footer-brand"><a href="/" aria-label="Norma home">${lockup({ height: 26, label: 'Norma' })}</a></div>
+    <nav class="footer-col" aria-label="Products"><h2>Products</h2><ul>${productLinks}</ul></nav>
+    <nav class="footer-col" aria-label="Company"><h2>Company</h2><ul><li><a href="/#about">About</a></li><li><a href="mailto:${esc(site.email)}">${esc(site.email)}</a></li></ul></nav>
+    <nav class="footer-col" aria-label="Legal"><h2>Legal</h2><ul><li><a href="/privacy/">Website privacy</a></li>${legal}</ul></nav>
+    <p class="footer-copy">&copy; ${YEAR} Norma</p>
   </div>
 </footer>`;
 }
@@ -120,7 +93,6 @@ export function layout({ site, products, title, description, path, ogImage = '/o
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preload" href="/assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Norma">
@@ -146,15 +118,34 @@ ${footer(site, products)}
 
 /* ---------- home ---------- */
 
-function productCard(p) {
-  return `<li class="product-card">
+function featuredProduct(p) {
+  const screens = (p.homeScreens || p.screenshots.slice(0, 4).map((s) => s.id))
+    .map((id, i) => screen(p, id, { sizes: '(max-width: 720px) 62vw, (max-width: 1100px) 23vw, 280px', eager: i < 2 }))
+    .join('');
+  return `<article class="product-feature" aria-labelledby="p-${p.slug}">
+  <div class="wrap grid">
+    <div class="product-feature-text">
+      <img class="app-icon" src="${p.iconSmall}" width="56" height="56" alt="">
+      <h3 id="p-${p.slug}" class="h2"><a href="${productRoute(p)}">${esc(p.name)}</a></h3>
+      <p class="lede">${esc(p.summary)}</p>
+      ${meta(p)}
+      <p class="actions"><a class="text-link" href="${productRoute(p)}">View ${esc(p.name)}</a>${storeLink(p)}</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <a class="screens screens-4" href="${productRoute(p)}" tabindex="-1" aria-hidden="true">${screens}</a>
+  </div>
+</article>`;
+}
+
+function productRow(p, site) {
+  const category = site.categories.find((c) => c.id === p.category);
+  return `<li class="product-row">
   <a href="${productRoute(p)}">
-    <img class="app-icon" src="${p.iconSmall}" width="56" height="56" alt="">
-    <span class="product-card-text">
-      <span class="product-card-name">${esc(p.name)}</span>
-      <span class="product-card-tagline">${esc(p.tagline)}</span>
-      <span class="product-card-meta">${esc(statusLabel(p))}</span>
-    </span>
+    <img class="app-icon" src="${p.iconSmall}" width="48" height="48" alt="">
+    <span class="product-row-name">${esc(p.name)}</span>
+    <span class="product-row-summary">${esc(p.summary)}</span>
+    <span class="product-row-meta">${esc(category ? category.name : '')} &middot; ${esc(statusLabel(p))}</span>
   </a>
 </li>`;
 }
@@ -162,79 +153,28 @@ function productCard(p) {
 export function homePage(site, products) {
   const listed = products.filter((p) => p.listed);
   const featured = listed.find((p) => p.featured);
-
-  const featuredBlock = featured
-    ? `<section class="featured" aria-labelledby="featured-title">
-  <div class="wrap">
-    <div class="featured-panel">
-      <div class="featured-copy">
-        <p class="eyebrow eyebrow-light">Featured</p>
-        <h2 id="featured-title" class="featured-name">${esc(featured.name)}</h2>
-        <p class="featured-headline">${esc(featured.headline)}</p>
-        <p class="featured-summary">${esc(featured.summary)}</p>
-        <div class="featured-actions">
-          <a class="btn btn-light" href="${productRoute(featured)}">Explore ${esc(featured.name)}</a>
-          ${storeCta(featured, { onDark: true })}
-        </div>
-      </div>
-      <div class="featured-stage" aria-hidden="false">
-        ${device(featured, 'meals', { className: 'device-side device-left', sizes: '(max-width: 760px) 34vw, 220px' })}
-        ${device(featured, 'today', { className: 'device-main', sizes: '(max-width: 760px) 46vw, 290px', eager: true })}
-        ${device(featured, 'progress', { className: 'device-side device-right', sizes: '(max-width: 760px) 34vw, 220px' })}
-      </div>
-    </div>
-  </div>
-</section>`
-    : '';
-
-  const categories = site.categories
-    .map((c) => {
-      const items = listed.filter((p) => p.category === c.id);
-      const list = items.length
-        ? `<ul class="product-list">${items.map(productCard).join('')}</ul>`
-        : `<p class="category-empty">New titles will appear here as they are released.</p>`;
-      return `<section class="category" aria-labelledby="cat-${c.id}">
-  <div class="category-head">
-    <h3 id="cat-${c.id}">${esc(c.name)}</h3>
-    <p>${esc(c.description)}</p>
-  </div>
-  ${list}
-</section>`;
-    })
-    .join('');
+  const others = listed.filter((p) => p !== featured);
 
   const body = `<section class="hero">
-  <div class="wrap">
-    <p class="eyebrow">${esc(site.descriptor)}</p>
-    <h1 class="hero-title">Software for living, working and exploring.</h1>
-    <p class="hero-lede">Norma designs, builds and publishes its own products: everyday apps, intelligent tools and interactive experiences, each made to do its job well.</p>
-    <div class="hero-actions">
-      <a class="btn btn-primary" href="#products">See the products</a>
-      <a class="btn btn-quiet" href="#about">About Norma</a>
-    </div>
+  <div class="wrap grid">
+    <h1 class="display">We make software.</h1>
+    <p class="hero-text">${esc(site.description)}</p>
   </div>
 </section>
-${featuredBlock}
-<section id="products" class="library" aria-labelledby="library-title">
-  <div class="wrap">
-    <div class="section-head">
-      <p class="eyebrow">Products</p>
-      <h2 id="library-title" class="section-title">The Norma library</h2>
-      <p class="section-lede">Every Norma product belongs to one of three collections.</p>
-    </div>
-    <div class="categories">${categories}</div>
+<section id="products" class="section" aria-labelledby="products-title">
+  <div class="wrap grid section-head">
+    <h2 id="products-title" class="label">Products</h2>
   </div>
+  ${featured ? featuredProduct(featured) : ''}
+  ${others.length ? `<div class="wrap grid"><ul class="product-rows">${others.map((p) => productRow(p, site)).join('')}</ul></div>` : ''}
 </section>
-<section id="about" class="about" aria-labelledby="about-title">
-  <div class="wrap about-grid">
-    <div>
-      <p class="eyebrow">About</p>
-      <h2 id="about-title" class="section-title">An independent software company.</h2>
-    </div>
-    <div class="about-copy">
-      <p>Norma develops and publishes its own software. We take each product from the first idea to release, then keep improving it once people are using it.</p>
-      <p>We are independent, so we choose what to build and we answer to the people who use it. We care about clear design, plain language and respect for your data.</p>
-      <p class="about-contact">Get in touch at <a href="mailto:${esc(site.email)}">${esc(site.email)}</a>.</p>
+<section id="about" class="section" aria-labelledby="about-title">
+  <div class="wrap grid">
+    <h2 id="about-title" class="label">About</h2>
+    <div class="about-text">
+      ${featured ? `<p>${esc(featured.name)} is our first public release.</p>` : ''}
+      <p>Other applications are in development in different fields. They will be listed here when they are released.</p>
+      <p>Contact: <a href="mailto:${esc(site.email)}">${esc(site.email)}</a></p>
     </div>
   </div>
 </section>`;
@@ -249,114 +189,72 @@ ${featuredBlock}
     description: site.description,
   };
 
-  return layout({
-    site,
-    products,
-    title: `Norma | ${site.descriptor}`,
-    description: site.description,
-    path: '/',
-    body,
-    jsonLd,
-  });
+  return layout({ site, products, title: `Norma | ${site.descriptor}`, description: site.description, path: '/', body, jsonLd });
 }
 
 /* ---------- product page ---------- */
 
 export function productPage(site, products, p) {
-  const gallery = p.screenshots
-    .map(
-      (s) => `<li class="gallery-item">
-  ${device(p, s.id, { sizes: '(max-width: 560px) 62vw, (max-width: 960px) 30vw, 180px' })}
-  <p class="gallery-label">${esc(s.label)}</p>
-</li>`,
-    )
+  const groups = (p.groups || [])
+    .map((g) => {
+      const id = `g-${g.title.toLowerCase()}`;
+      const shots = g.screenshots
+        .map((sid) => screen(p, sid, { sizes: '(max-width: 720px) 62vw, (max-width: 1100px) 19vw, 220px' }))
+        .join('');
+      return `<section class="group" style="--n: ${g.screenshots.length}" aria-labelledby="${id}">
+  <h2 id="${id}" class="group-title">${esc(g.title)}</h2>
+  <p class="group-body">${esc(g.body)}</p>
+  <div class="screens group-screens">${shots}</div>
+</section>`;
+    })
     .join('');
-
-  const features = p.features
-    .map(
-      (f, i) => `<li class="feature">
-  <p class="feature-index">${String(i + 1).padStart(2, '0')}</p>
-  <h3>${esc(f.title)}</h3>
-  <p>${esc(f.body)}</p>
-</li>`,
-    )
-    .join('');
+  const bandCols = (p.groups || []).reduce((n, g) => n + g.screenshots.length, 0);
 
   const facts = [
+    ['Availability', statusLabel(p)],
     ['Platform', platformList(p)],
     ['Price', p.price],
     ['Category', p.appStoreCategory],
-    ['Availability', statusLabel(p)],
+    ['Publisher', 'Norma'],
   ]
     .map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`)
     .join('');
 
   const links = [
-    p.supportUrl && `<a href="${esc(p.supportUrl)}" rel="noopener">Support</a>`,
-    p.privacyUrl && `<a href="${esc(p.privacyUrl)}" rel="noopener">Privacy policy</a>`,
+    p.privacyUrl && `<li><a href="${esc(p.privacyUrl)}" rel="noopener">Privacy policy</a></li>`,
+    p.supportUrl && `<li><a href="${esc(p.supportUrl)}" rel="noopener">Support</a></li>`,
+    isAvailable(p) && `<li><a href="${esc(p.appStoreUrl)}" rel="noopener">App Store</a></li>`,
   ]
     .filter(Boolean)
     .join('');
 
-  const note = !isAvailable(p) && p.statusNote ? `<p class="status-note">${esc(p.statusNote)}</p>` : '';
-
-  const body = `<nav class="wrap crumbs" aria-label="Breadcrumb">
-  <ol><li><a href="/#products">Products</a></li><li aria-current="page">${esc(p.name)}</li></ol>
-</nav>
-<section class="p-hero">
-  <div class="wrap p-hero-grid">
-    <div class="p-hero-copy">
-      <img class="app-icon app-icon-lg" src="${p.icon}" width="88" height="88" alt="${esc(p.name)} app icon">
-      <h1 class="p-title">${esc(p.name)}</h1>
-      <p class="p-headline">${esc(p.headline)}</p>
-      <p class="p-description">${esc(p.description)}</p>
-      <div class="p-actions">
-        ${storeCta(p)}
-        <span class="p-meta">${esc(p.price)} &middot; ${esc(platformList(p))}</span>
-      </div>
-      ${note}
+  const body = `<section class="p-head">
+  <div class="wrap grid">
+    <div class="p-text">
+      <img class="app-icon" src="${p.icon}" width="88" height="88" alt="${esc(p.name)} app icon">
+      <h1 class="display display-product">${esc(p.name)}</h1>
+      <p class="lede">${esc(p.summary)} ${esc(p.description)}</p>
+      ${meta(p)}
+      ${storeLink(p) ? `<p class="actions">${storeLink(p)}</p>` : ''}
     </div>
-    <div class="p-hero-stage">
-      ${device(p, 'today', { className: 'device-main', sizes: '(max-width: 760px) 58vw, 300px', eager: true })}
-      ${device(p, 'progress', { className: 'device-back', sizes: '(max-width: 760px) 46vw, 240px' })}
-    </div>
+    ${p.heroScreen ? `<div class="p-hero-shot">${screen(p, p.heroScreen, { sizes: '(max-width: 900px) 62vw, 300px', eager: true })}</div>` : ''}
   </div>
 </section>
-<section class="gallery" aria-labelledby="gallery-title">
-  <div class="wrap">
-    <h2 id="gallery-title" class="section-title section-title-sm">Inside the app</h2>
-  </div>
-  <ul class="gallery-track wrap" tabindex="0" aria-label="Screenshots of ${esc(p.name)}">${gallery}</ul>
-</section>
-<section class="features" aria-labelledby="features-title">
-  <div class="wrap">
-    <div class="section-head">
-      <p class="eyebrow">Features</p>
-      <h2 id="features-title" class="section-title">Everything for the day, nothing in the way.</h2>
-    </div>
-    <ul class="feature-grid">${features}</ul>
-  </div>
-</section>
-<section class="p-details" aria-labelledby="details-title">
-  <div class="wrap details-grid">
-    <div class="details-privacy">
-      <p class="eyebrow">Your data</p>
-      <h2 id="details-title" class="section-title section-title-sm">Your records stay yours.</h2>
-      <p>${esc(p.privacy)}</p>
-      <p class="disclaimer">${esc(p.disclaimer)}</p>
-    </div>
-    <div class="details-facts">
+<div class="p-band">
+  <div class="wrap band" style="--cols: ${bandCols}">${groups}</div>
+</div>
+<section class="section p-info" aria-labelledby="info-title">
+  <div class="wrap grid">
+    <h2 id="info-title" class="label">Information</h2>
+    <div class="info-body">
       <dl class="facts">${facts}</dl>
-      <div class="p-links">${links}</div>
+      <div class="info-privacy">
+        <h3>Privacy</h3>
+        <p>${esc(p.privacy)}</p>
+        <p class="note">${esc(p.disclaimer)}</p>
+      </div>
+      <ul class="link-list">${links}</ul>
     </div>
-  </div>
-</section>
-<section class="p-close">
-  <div class="wrap p-close-inner">
-    <img class="app-icon" src="${p.iconSmall}" width="56" height="56" alt="">
-    <p class="p-close-title">${esc(p.name)}</p>
-    <p class="p-close-tagline">${esc(p.tagline)}</p>
-    ${storeCta(p)}
   </div>
 </section>`;
 
@@ -366,7 +264,7 @@ export function productPage(site, products, p) {
     name: p.name,
     applicationCategory: 'HealthApplication',
     operatingSystem: 'iOS',
-    description: p.description,
+    description: `${p.summary} ${p.description}`,
     url: `${site.url}${productRoute(p)}`,
     publisher: { '@type': 'Organization', name: 'Norma', url: site.url },
     ...(isAvailable(p) ? { offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, installUrl: p.appStoreUrl } : {}),
@@ -376,7 +274,7 @@ export function productPage(site, products, p) {
     site,
     products,
     title: `${p.name} | ${p.tagline} | Norma`,
-    description: `${p.name} for ${platformList(p)}. ${p.summary}`,
+    description: `${p.summary} ${p.description}`,
     path: productRoute(p),
     ogImage: `/og/${p.slug}.png`,
     body,
@@ -387,40 +285,26 @@ export function productPage(site, products, p) {
 /* ---------- simple pages ---------- */
 
 export function privacyPage(site, products) {
-  const body = `<section class="prose-page">
-  <div class="wrap prose">
-    <p class="eyebrow">Legal</p>
-    <h1 class="section-title">Website privacy</h1>
-    <p>This website does not use cookies, analytics or tracking scripts, and it does not ask you for any personal information.</p>
-    <p>The site is hosted on GitHub Pages. GitHub may keep standard server logs, such as IP addresses, to operate and secure the service. Its handling of that data is described in the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">GitHub General Privacy Statement</a>.</p>
-    <p>Each Norma product has its own privacy policy, linked from its page. If you email us, we use your message only to reply.</p>
-    <p>Questions: <a href="mailto:${esc(site.email)}">${esc(site.email)}</a>.</p>
+  const body = `<section class="section prose-page">
+  <div class="wrap grid">
+    <h1 class="label label-h1">Website privacy</h1>
+    <div class="prose">
+      <p>This website does not use cookies, analytics or tracking scripts, and it does not ask for personal information.</p>
+      <p>It is hosted on GitHub Pages. GitHub may keep standard server logs, such as IP addresses, to operate and secure the service, as described in the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">GitHub General Privacy Statement</a>.</p>
+      <p>Each Norma application has its own privacy policy, linked from its page. If you email us, we use your message only to reply.</p>
+      <p>Questions: <a href="mailto:${esc(site.email)}">${esc(site.email)}</a></p>
+    </div>
   </div>
 </section>`;
-  return layout({
-    site,
-    products,
-    title: 'Website privacy | Norma',
-    description: 'How the normaapps.com website handles your information.',
-    path: '/privacy/',
-    body,
-  });
+  return layout({ site, products, title: 'Website privacy | Norma', description: 'How the normaapps.com website handles your information.', path: '/privacy/', body });
 }
 
 export function notFoundPage(site, products) {
-  const body = `<section class="prose-page not-found">
-  <div class="wrap prose">
-    <p class="eyebrow">404</p>
-    <h1 class="section-title">This page does not exist.</h1>
-    <p>The link may be old or mistyped. <a href="/">Go to the homepage</a> or <a href="/#products">see the products</a>.</p>
+  const body = `<section class="hero not-found">
+  <div class="wrap grid">
+    <h1 class="display">Page not found.</h1>
+    <p class="hero-text">The link may be old or mistyped. Go to the <a href="/">homepage</a> or see <a href="/#products">products</a>.</p>
   </div>
 </section>`;
-  return layout({
-    site,
-    products,
-    title: 'Page not found | Norma',
-    description: 'This page does not exist.',
-    path: '/404.html',
-    body,
-  });
+  return layout({ site, products, title: 'Page not found | Norma', description: 'This page does not exist.', path: '/404.html', body });
 }
