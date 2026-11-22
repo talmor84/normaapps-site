@@ -84,7 +84,7 @@ function validate(site, products) {
       throw new Error(`Product ${p.slug} is available but has no store or external URL`);
     }
     if (p.page) {
-      const ids = [p.heroScreen, ...(p.homeScreens || []), ...(p.groups || []).flatMap((g) => g.screenshots)];
+      const ids = [...(p.trioScreens || []), ...(p.groups || []).flatMap((g) => g.screenshots)];
       for (const id of ids.filter(Boolean)) {
         if (!p.screenshots.some((s) => s.id === id)) throw new Error(`${p.slug} points at missing screenshot ${id}`);
       }
