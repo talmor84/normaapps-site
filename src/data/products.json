@@ -1,0 +1,69 @@
+[
+  {
+    "slug": "norma-health",
+    "name": "Norma Health",
+    "storeName": "Norma Health: Meals & Weight",
+    "category": "software",
+    "platforms": ["iPhone"],
+    "price": "Free",
+    "status": "coming-soon",
+    "statusNote": "Norma Health is in App Store review. This page will link to the App Store as soon as the app is available.",
+    "featured": true,
+    "listed": true,
+    "page": true,
+    "tagline": "Food, workouts and weight",
+    "headline": "Food, workouts and weight, on one clear screen.",
+    "summary": "Log meals in a couple of taps, record workouts and walks, and follow your weight against a goal you set.",
+    "description": "Norma Health keeps the day simple: what you ate, how you moved, and whether you are on pace. It is a personal health log for iPhone, built for everyday use.",
+    "appStoreCategory": "Health & Fitness",
+    "icon": "/assets/products/norma-health/icon-192.png",
+    "iconSmall": "/assets/products/norma-health/icon-96.png",
+    "screenshotSize": { "width": 1320, "height": 2868 },
+    "screenshots": [
+      { "id": "today", "label": "Today", "alt": "Norma Health Today screen showing calories left, protein, movement, weight and the meals logged so far" },
+      { "id": "meals", "label": "Meals", "alt": "Norma Health Meals screen with a week of daily calorie bars and the day's breakfast" },
+      { "id": "log-meal", "label": "Log a meal", "alt": "Logging dinner in Norma Health, with recent foods, a saved meal and a favorite" },
+      { "id": "food-search", "label": "Food search", "alt": "Searching for chicken in Norma Health, showing a saved meal and catalog foods" },
+      { "id": "activity", "label": "Activity", "alt": "Norma Health Activity screen with minutes moved this week and two strength routines" },
+      { "id": "progress", "label": "Progress", "alt": "Norma Health Progress screen with a 7-day average weight chart against a goal" }
+    ],
+    "features": [
+      {
+        "title": "Your day at a glance",
+        "body": "Today brings food, movement and weight together. See what you have eaten so far, how much of your plan is left, and your weight trend, all on one screen.",
+        "screenshot": "today"
+      },
+      {
+        "title": "Meals by day and by week",
+        "body": "Breakfast, lunch, dinner and snacks, each with calories and protein. A week of bars shows how the days compare with your budget.",
+        "screenshot": "meals"
+      },
+      {
+        "title": "Logging that remembers you",
+        "body": "Recent foods, favorites and the meals you have built are ready when you open the log. Pick one, adjust the portion if you need to, and you are done.",
+        "screenshot": "log-meal"
+      },
+      {
+        "title": "More than 5,000 foods",
+        "body": "Search a catalog of everyday foods, or build a meal from its ingredients and keep it for next time. Your own meals appear first.",
+        "screenshot": "food-search"
+      },
+      {
+        "title": "Workouts and walks",
+        "body": "Record walks, rides and runs, or start a strength routine from the built-in exercise library. Activity shows your minutes for the week and the sessions still to go.",
+        "screenshot": "activity"
+      },
+      {
+        "title": "Weight against your plan",
+        "body": "A 7-day average smooths out daily swings. The chart shows where you are, where your plan expects you to be, and when you are on pace to reach your goal.",
+        "screenshot": "progress"
+      }
+    ],
+    "privacy": "No ads, no tracking and no selling of your data. Export everything or delete your account at any time from inside the app.",
+    "disclaimer": "Norma Health is a planning aid, not medical advice. Talk to a doctor before changing your diet or exercise.",
+    "appStoreUrl": "https://apps.apple.com/app/id6837557939",
+    "externalUrl": null,
+    "privacyUrl": "https://api-production-0cc02593.up.railway.app/privacy",
+    "supportUrl": "https://api-production-0cc02593.up.railway.app/support"
+  }
+]

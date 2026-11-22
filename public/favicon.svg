@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <rect width="32" height="32" rx="6" ry="6" fill="#0f3d3d"/>
+  <!--
+    Norma logomark: closed right triangle, right angle at bottom-left,
+    vertical leg ~1.57x the horizontal. Canonical 32-unit geometry
+    locked in Sprint 3.1.
+
+    Sprint 3.3: tightened the triangle's in-tile inset to match the
+    marketing nav lockup proportion (~0.51 of the tile, down from
+    the prior edge-to-edge 0.69). The canonical polygon points
+    "10,5 10,27 24,27" stay BYTE-IDENTICAL inside a nested 24-unit
+    SVG centered with 4u padding on each side of the 32u tile.
+    This is a deliberate change to the canonical standalone mark's
+    inset everywhere it renders: the future product-sidebar
+    adoption will inherit this tighter inset.
+
+    No inner registration square (that was the prior open-L grammar).
+    2-unit stroke at the nested-SVG scale so the glyph reads at
+    typical browser-tab sizes.
+  -->
+  <svg x="4" y="4" width="24" height="24" viewBox="0 0 32 32">
+    <polygon points="10,5 10,27 24,27" fill="none" stroke="#f4f1ec" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+  </svg>
+</svg>

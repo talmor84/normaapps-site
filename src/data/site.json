@@ -1,0 +1,24 @@
+{
+  "name": "Norma",
+  "descriptor": "Independent Software Publisher",
+  "url": "https://normaapps.com",
+  "email": "hello@normaapps.com",
+  "description": "Norma is an independent software publisher. We design, build and publish our own software for living, working and exploring.",
+  "categories": [
+    {
+      "id": "software",
+      "name": "Software",
+      "description": "Apps for everyday life and work."
+    },
+    {
+      "id": "intelligence",
+      "name": "Intelligence",
+      "description": "Tools that turn information into clear answers."
+    },
+    {
+      "id": "experiences",
+      "name": "Experiences",
+      "description": "Media, play and interactive worlds."
+    }
+  ]
+}
