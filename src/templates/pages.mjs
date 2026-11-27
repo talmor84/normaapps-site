@@ -164,14 +164,48 @@ function devCard(p) {
 </li>`;
 }
 
+/* A product people can use today on the web (not the App Store): the whole card links out. */
+function playCard(p) {
+  const i = p.cardImage;
+  const img = i
+    ? `<img class="card-image" src="${i.src}"${i.srcset ? ` srcset="${i.srcset}" sizes="(max-width: 760px) 100vw, 560px"` : ''} width="${i.width}" height="${i.height}" alt="${esc(i.alt)}" loading="lazy" decoding="async">`
+    : '';
+  return `<li class="card card-play card-${esc(p.cardTone || 'teal')}">
+  <a class="card-link" href="${esc(p.externalUrl)}">
+    <span class="card-text">
+      <span class="card-title">${esc(p.name)}</span>
+      <span class="card-summary">${esc(p.summary)}</span>
+      ${p.playing ? `<span class="card-playing">${esc(p.playing)}</span>` : ''}
+      <span class="card-meta"><span class="tag">${esc(statusLabel(p))}</span><span class="card-note">${esc(platformList(p))}</span></span>
+      <span class="card-go">${esc(p.externalLabel || p.externalUrl)}${ARROW}</span>
+    </span>
+    ${img}
+  </a>
+</li>`;
+}
+
 export function homePage(site, products) {
   const listed = products.filter((p) => p.listed);
   const lead = listed.find((p) => p.featured);
   const dev = listed.filter((p) => p !== lead && p.status === 'in-development');
+  const play = listed.filter((p) => p !== lead && p.status === 'available' && p.externalUrl && !p.page);
 
   const body = `<h1 class="visually-hidden">Norma, independent software publisher</h1>
 <div id="products">
 ${lead ? featured(lead) : ''}
+${
+  play.length
+    ? `<section class="dev play" aria-labelledby="play-title">
+  <div class="wrap dev-grid">
+    <div class="dev-intro">
+      <h2 id="play-title" class="section-title">Play now</h2>
+      <p>Open in the Meta Quest Browser. No store download and no account.</p>
+    </div>
+    <ul class="cards">${play.map(playCard).join('')}</ul>
+  </div>
+</section>`
+    : ''
+}
 ${
   dev.length
     ? `<section class="dev" aria-labelledby="dev-title">
