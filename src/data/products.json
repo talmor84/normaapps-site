@@ -94,6 +94,33 @@
     "supportUrl": "https://api-production-0cc02593.up.railway.app/support"
   },
   {
+    "slug": "norma-games",
+    "name": "Norma Games",
+    "category": "experiences",
+    "platforms": [
+      "Meta Quest"
+    ],
+    "status": "available",
+    "featured": false,
+    "listed": true,
+    "page": false,
+    "summary": "Games for Meta Quest that open in the headset’s Browser. Free, with nothing to install.",
+    "playing": "Now playing: table tennis against Master Kaito.",
+    "externalUrl": "https://play.normaapps.com",
+    "externalLabel": "play.normaapps.com",
+    "price": "Free",
+    "cardImage": {
+      "src": "/assets/products/norma-games/dojo-960.webp",
+      "srcset": "/assets/products/norma-games/dojo-480.webp 480w, /assets/products/norma-games/dojo-960.webp 960w",
+      "width": 960,
+      "height": 540,
+      "alt": "Master Kaito waits across a table tennis table in a dark dojo, captured in the game"
+    },
+    "cardTone": "teal",
+    "statusText": "Free to play",
+    "tagline": "Games for Meta Quest"
+  },
+  {
     "slug": "norma-spatial-lab",
     "name": "Norma Spatial Lab",
     "category": "experiences",
@@ -102,7 +129,7 @@
     ],
     "status": "in-development",
     "featured": false,
-    "listed": true,
+    "listed": false,
     "page": false,
     "tagline": "Virtual reality",
     "summary": "Interactive experiences for virtual reality.",
